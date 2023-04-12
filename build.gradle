@@ -1,9 +1,12 @@
 plugins {
     id("java")
+    id("application")
 }
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+group = "ru.vadim.maksimrun"
+version = "0.0.1"
+
+mainClassName = "ru.vadim.maksimrun.Main"
 
 repositories {
     mavenCentral()
