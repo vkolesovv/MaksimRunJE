@@ -8,6 +8,6 @@ java -jar builds/MaksimRunJE-0.0.2.jar
 
 ---
 
-Update log
-* 0.0.2
-    * Jumps
+* Update log
+  * 0.0.2
+      * Jumps
