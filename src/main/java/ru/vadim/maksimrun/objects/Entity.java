@@ -12,9 +12,7 @@ public abstract class Entity extends JPanel {
 
      protected void create(String imageId) {
          String path = "assets" + File.separator + "images" + File.separator + imageId + ".png";
-         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-         String absolutePath = Objects.requireNonNull(classLoader.getResource(path)).getPath();
-         this.image = new ImageIcon(absolutePath).getImage();
+         this.image = new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource(path))).getImage();
      }
 
      public void paintComponent(Graphics graphics) {

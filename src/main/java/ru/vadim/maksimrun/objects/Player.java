@@ -59,10 +59,6 @@ public final class Player extends Entity implements ActionListener, Runnable {
             if (isJump) {
                 jump();
             }
-            if (frame != 4) {
-                frame = 4;
-                switchFrame(frame);
-            }
         }
         super.paintComponent(getGraphics());
     }

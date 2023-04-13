@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "ru.vadim.maksimrun"
-version = "0.0.1"
+version = "0.0.2"
 
 mainClassName = "ru.vadim.maksimrun.Main"
 
@@ -15,6 +15,14 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+}
+
+jar {
+    manifest {
+        attributes(
+                "Main-Class": mainClassName
+        )
+    }
 }
 
 tasks.test {
