@@ -1,38 +1,39 @@
 package ru.vadim.maksimrun.objects;
 
-import javax.swing.*;
+import ru.vadim.maksimrun.utils.KeyListener;
+
+import javax.swing.Timer;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.Random;
 
 public final class Player extends Entity implements ActionListener, Runnable {
     private int frame = 2;
-    public int health = 100;
     public boolean canJump = true;
+    boolean threading = true;
     public boolean isJump = false;
-    public int speed = 4;
-    public int jump_count = 13;
+    public int jump_count = 20;
     public List<Entity> entities = new ArrayList<Entity>();
     Timer switchFrameT = new Timer(500, this);
     Timer default_event = new Timer(30, this);
+    Timer movement = new Timer(20, this);
     Thread thread = new Thread(this);
     public Player(int x, int y) {
         this.create("man/man22");
         switchFrameT.setActionCommand("Switch");
         default_event.setActionCommand("Default");
+        movement.setActionCommand("Move");
 
+        movement.start();
         switchFrameT.start();
         default_event.start();
         this.CordX = x;
         this.CordY = y;
         thread.start();
 
-        addKeyListener(new KeyRegister());
+        addKeyListener(new KeyListener(this));
         setFocusable(true);
     }
 
@@ -42,7 +43,17 @@ public final class Player extends Entity implements ActionListener, Runnable {
 
     public void move() {
         for (Entity entity : entities) {
-            entity.move(this.speed);
+            entity.move(6);
+        }
+    }
+
+    public void drawAll() {
+        Graphics graphics = getGraphics();
+        paintComponent(getGraphics());
+        Graphics2D graphics2D = (Graphics2D) graphics;
+
+        for (Entity entity : entities) {
+            graphics2D.drawImage(entity.image, entity.CordX, entity.CordY, null);
         }
     }
 
@@ -59,46 +70,38 @@ public final class Player extends Entity implements ActionListener, Runnable {
             if (isJump) {
                 jump();
             }
+        } else if (Objects.equals(e.getActionCommand(), "Move")) {
+            move();
+            drawAll();
         }
-        super.paintComponent(getGraphics());
     }
     public void jump() {
-        if(this.jump_count >= -13) {
+        if(this.jump_count >= -20) {
             if (jump_count < 0) {
-                this.CordY += Math.pow(jump_count, 2) / 3;
+                this.CordY += Math.pow(jump_count, 2) / 10;
             } else {
-                this.CordY -= Math.pow(jump_count, 2) / 3;
+                this.CordY -= Math.pow(jump_count, 2) / 10;
             }
             jump_count--;
         } else {
-            jump_count = 13;
+            jump_count = 20;
             this.isJump = false;
-        }
-        super.paintComponent(getGraphics());
-    }
-
-    private class KeyRegister extends KeyAdapter {
-        @Override
-        public void keyPressed(KeyEvent e) {
-            int key = e.getKeyCode();
-
-            System.out.println("Pressed key");
-
-            if (key == KeyEvent.VK_SPACE) {
-                if (!isJump && canJump) {
-                    isJump = true;
-                    System.out.println("Is jump");
-                }
-            }
         }
     }
     @Override
     public void run() {
-        while (true) {
+        while (threading) {
             Random random = new Random();
 
+            if (random.nextDouble() * 100 < 3) {
+                entities.add(new Poop());
+            }
+            if (random.nextDouble() * 1000 <= 2) {
+                entities.add(new Peas());
+            }
+
             try {
-                Thread.sleep(random.nextInt(2000));
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
